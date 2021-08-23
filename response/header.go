@@ -1,5 +1,6 @@
 package response
 
 const (
-	headerDate = "Date"
+	headerDate       = "Date"
+	headerXRequestID = "X-Request-Id"
 )
