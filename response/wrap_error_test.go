@@ -75,6 +75,7 @@ func TestWrapRequestErrorDeserializer(t *testing.T) {
 func TestWrapResponseErrorDeserializer(t *testing.T) {
 	testCases := []struct {
 		Name   string
+		SetMD  func(md *httpc.Metadata)
 		Output httpc.DeserializeOutput
 		Err    error
 
@@ -100,12 +101,29 @@ func TestWrapResponseErrorDeserializer(t *testing.T) {
 
 			ExpectError: "http response error, status code: 404, response error",
 		},
+		{
+			Name: "err with response request id",
+			Err:  errors.New("response error"),
+			SetMD: func(md *httpc.Metadata) {
+				md.Set(mdRequestIDKey{}, "12ca095b1798410e91b0f5f2ec6b6e05")
+			},
+			Output: httpc.DeserializeOutput{
+				Response: &http.Response{
+					StatusCode: http.StatusNotFound,
+				},
+			},
+
+			ExpectError: "http response error, status code: 404, request id: 12ca095b1798410e91b0f5f2ec6b6e05, response error",
+		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			deserialize := WrapResponseErrorDeserializer{}.Deserializer(
 				func(req *http.Request) (output httpc.DeserializeOutput, md httpc.Metadata, err error) {
+					if tc.SetMD != nil {
+						tc.SetMD(&md)
+					}
 					return tc.Output, md, tc.Err
 				},
 			)

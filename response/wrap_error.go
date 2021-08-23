@@ -46,9 +46,11 @@ func (d WrapResponseErrorDeserializer) deserialize(req *http.Request, deserializ
 		return
 	}
 
+	reqID, _ := GetRequestID(md)
 	err = &httpc.ResponseError{
-		Response: output.Response,
-		Err:      err,
+		Response:  output.Response,
+		RequestID: reqID,
+		Err:       err,
 	}
 	return
 }
