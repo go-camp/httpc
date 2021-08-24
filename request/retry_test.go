@@ -3,6 +3,7 @@ package request
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -138,6 +139,76 @@ func TestRetryBuilder(t *testing.T) {
 				if err != nil {
 					t.Fatalf("expect no err, got %s", err)
 				}
+			}
+		})
+	}
+}
+
+type testRetryableError struct {
+	Retryable bool
+}
+
+func (e *testRetryableError) Error() string {
+	return "retryable error"
+}
+func (e *testRetryableError) RetryableError() bool {
+	return e.Retryable
+}
+
+func TestBasicRetryer(t *testing.T) {
+	retryer := DefaultRetryer
+	maxAttempts := retryer.MaxAttempts()
+	if maxAttempts != 3 {
+		t.Fatalf("expect max attempts is %d, got %d", 3, maxAttempts)
+	}
+
+	delay := retryer.Delay(1)
+	if delay <= 0 {
+		t.Fatalf("expect delay greater than 0, got %d", delay)
+	}
+
+	testCases := []struct {
+		Name string
+		Err  error
+
+		ExpectRetryable Retryable
+	}{
+		{
+			Name: "errors new",
+			Err:  errors.New("temp err"),
+
+			ExpectRetryable: RetryableUnknown,
+		},
+		{
+			Name: "retryable error",
+			Err:  &testRetryableError{Retryable: false},
+
+			ExpectRetryable: RetryableNo,
+		},
+		{
+			Name: "connection error",
+			Err:  errors.New("connection reset"),
+
+			ExpectRetryable: RetryableYes,
+		},
+		{
+			Name: "response error",
+			Err: &httpc.ResponseError{
+				Response: &http.Response{
+					Header:     http.Header{},
+					StatusCode: http.StatusServiceUnavailable,
+				},
+				Err: errors.New("temp unavailable"),
+			},
+
+			ExpectRetryable: RetryableYes,
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			retryable := retryer.Check(tc.Err)
+			if tc.ExpectRetryable != retryable {
+				t.Fatalf("expect retryable is %s, got %s", tc.ExpectRetryable, retryable)
 			}
 		})
 	}
