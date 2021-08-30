@@ -33,6 +33,22 @@ func GetOperationNameFromMetadata(md httpc.Metadata) (operationName string) {
 	return
 }
 
+func GetServiceNameFromContextOrMetadata(ctx context.Context, md httpc.Metadata) (serviceName string) {
+	serviceName = GetServiceNameFromContext(ctx)
+	if serviceName == "" {
+		serviceName = GetServiceNameFromMetadata(md)
+	}
+	return
+}
+
+func GetOperationNameFromContextOrMetadata(ctx context.Context, md httpc.Metadata) (operationName string) {
+	operationName = GetOperationNameFromContext(ctx)
+	if operationName == "" {
+		operationName = GetOperationNameFromMetadata(md)
+	}
+	return
+}
+
 // ServiceOperationNameInitializer Add service and operatioin name to context and metadata.
 type ServiceOperationNameInitializer struct {
 	ServiceName   string
@@ -69,29 +85,13 @@ func (ini WrapOperationErrorInitializer) Initializer(initialize httpc.Initialize
 	}
 }
 
-func getServiceNameFromContextOrMetadata(ctx context.Context, md httpc.Metadata) (serviceName string) {
-	serviceName = GetServiceNameFromContext(ctx)
-	if serviceName == "" {
-		serviceName = GetServiceNameFromMetadata(md)
-	}
-	return
-}
-
-func getOperationNameFromContextOrMetadata(ctx context.Context, md httpc.Metadata) (operationName string) {
-	operationName = GetOperationNameFromContext(ctx)
-	if operationName == "" {
-		operationName = GetOperationNameFromMetadata(md)
-	}
-	return
-}
-
 func (ini WrapOperationErrorInitializer) initialize(ctx context.Context, input interface{}, initialize httpc.InitializeFunc) (
 	output interface{}, md httpc.Metadata, err error,
 ) {
 	output, md, err = initialize(ctx, input)
 	if err != nil {
-		serviceName := getServiceNameFromContextOrMetadata(ctx, md)
-		operationName := getOperationNameFromContextOrMetadata(ctx, md)
+		serviceName := GetServiceNameFromContextOrMetadata(ctx, md)
+		operationName := GetOperationNameFromContextOrMetadata(ctx, md)
 		if serviceName != "" || operationName != "" {
 			err = &httpc.OperationError{
 				Service:   serviceName,
