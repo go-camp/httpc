@@ -9,13 +9,10 @@ import (
 type mdResponseKey struct{}
 
 // GetResponse gets response from metadata.
-func GetResponse(md httpc.Metadata) (*http.Response, bool) {
-	e, ok := md.Get(mdResponseKey{})
-	if !ok {
-		return nil, false
-	}
-	resp, ok := e.(*http.Response)
-	return resp, ok
+func GetResponse(md httpc.Metadata) *http.Response {
+	e := md.Get(mdResponseKey{})
+	resp, _ := e.(*http.Response)
+	return resp
 }
 
 // ResponseDeserializer sets response(*http.Response) to metadata.

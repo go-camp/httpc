@@ -26,10 +26,7 @@ func TestDateDeserializer(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expect no err, got %s", err)
 	}
-	date, ok := GetDate(md)
-	if !ok {
-		t.Fatal("expect ok is true")
-	}
+	date := GetDate(md)
 	if !date.Equal(now) {
 		t.Fatalf("expect date is %s, got %s", now, date)
 	}

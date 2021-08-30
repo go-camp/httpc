@@ -19,10 +19,7 @@ func TestResponseDeserializer(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expect no err, got %s", err)
 	}
-	resp, ok := GetResponse(md)
-	if !ok {
-		t.Fatal("expect ok is true")
-	}
+	resp := GetResponse(md)
 	if expectResp != resp {
 		t.Fatalf("expect response is %p, got %p", expectResp, resp)
 	}

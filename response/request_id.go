@@ -8,13 +8,10 @@ import (
 
 type mdRequestIDKey struct{}
 
-func GetRequestID(md httpc.Metadata) (string, bool) {
-	v, ok := md.Get(mdRequestIDKey{})
-	if !ok {
-		return "", false
-	}
-	id, ok := v.(string)
-	return id, ok
+func GetRequestID(md httpc.Metadata) (id string) {
+	v := md.Get(mdRequestIDKey{})
+	id, _ = v.(string)
+	return id
 }
 
 // RequestIDDeserializer sets the response's request id to metadata.

@@ -23,10 +23,7 @@ func TestRequestIDDeserializer(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expect no err, got %s", err)
 	}
-	requestID, ok := GetRequestID(md)
-	if !ok {
-		t.Fatal("expect ok is true")
-	}
+	requestID := GetRequestID(md)
 	if expectRequestID != requestID {
 		t.Fatalf("expect request id is %s, got %s", expectRequestID, requestID)
 	}

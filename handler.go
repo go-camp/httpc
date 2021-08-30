@@ -13,9 +13,8 @@ type Metadata struct {
 	kvs map[interface{}]interface{}
 }
 
-func (md Metadata) Get(key interface{}) (value interface{}, ok bool) {
-	value, ok = md.kvs[key]
-	return
+func (md Metadata) Get(key interface{}) (value interface{}) {
+	return md.kvs[key]
 }
 
 func (md *Metadata) Set(key, value interface{}) {

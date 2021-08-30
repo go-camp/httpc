@@ -9,13 +9,10 @@ import (
 
 type mdDateKey struct{}
 
-func GetDate(md httpc.Metadata) (t time.Time, ok bool) {
-	v, ok := md.Get(mdDateKey{})
-	if !ok {
-		return time.Time{}, false
-	}
-	t, ok = v.(time.Time)
-	return t, ok
+func GetDate(md httpc.Metadata) (t time.Time) {
+	v := md.Get(mdDateKey{})
+	t, _ = v.(time.Time)
+	return t
 }
 
 // DateDeserializer parses the value of reponse header Date and
