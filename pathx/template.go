@@ -42,8 +42,8 @@ func MustParseTemplate(text string) *Template {
 
 // Execute applies a parsed template to the specified data object.
 //
-// path is same as Path field of url.URL.
-// rawPath is same RawPath field of url.URL.
+// path is the same as the Path field of url.URL.
+// rawPath is the same as the RawPath field of url.URL.
 func (t *Template) Execute(data map[string]string) (path, rawPath string) {
 	var pathB, rawPathB strings.Builder
 	pathB.Grow(len(t.text))
