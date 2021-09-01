@@ -79,12 +79,12 @@ func (t *Template) Resolve(baseURL *url.URL, data map[string]string) *url.URL {
 		return pathURL
 	}
 
-	resolveURL := baseURL.ResolveReference(pathURL)
-	resolveURL.RawQuery = baseURL.RawQuery
-	resolveURL.Fragment = baseURL.Fragment
-	resolveURL.RawFragment = baseURL.RawFragment
+	resolvedURL := baseURL.ResolveReference(pathURL)
+	resolvedURL.RawQuery = baseURL.RawQuery
+	resolvedURL.Fragment = baseURL.Fragment
+	resolvedURL.RawFragment = baseURL.RawFragment
 
-	return resolveURL
+	return resolvedURL
 }
 
 func (t *Template) String() string {
