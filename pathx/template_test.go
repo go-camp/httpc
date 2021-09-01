@@ -47,11 +47,11 @@ func TestTemplate_Execute(t *testing.T) {
 
 			Path: "/:name",
 			Data: map[string]string{
-				"name": "中",
+				"name": "中/",
 			},
 
-			ExpectPath:    "/中",
-			ExpectRawPath: "/%E4%B8%AD",
+			ExpectPath:    "/中/",
+			ExpectRawPath: "/%E4%B8%AD%2F",
 		},
 
 		{
