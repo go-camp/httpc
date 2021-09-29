@@ -179,9 +179,9 @@ func ExampleHandler_order() {
 	}
 
 	output, _, err := h.Handle(context.Background(), &Input{Name: "name"})
-	fmt.Printf("output: %#v\n", output)
+	fmt.Println("output:", output)
 	fmt.Println("err:", err)
 	// output:
-	// output: &httpc_test.Output{}
+	// output: &{}
 	// err: <nil>
 }
