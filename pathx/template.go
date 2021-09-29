@@ -19,7 +19,7 @@ var slotRe = regexp.MustCompile(`:[a-zA-Z0-9_-]+`)
 //   /:store/products/:product.:ext
 //   /:store.json
 //   /:name
-func ParseTemplate(text string) (*Template, error) {
+func ParseTemplate(text string) *Template {
 	t := &Template{text: text}
 
 	matches := slotRe.FindAllStringSubmatchIndex(text, -1)
@@ -28,15 +28,6 @@ func ParseTemplate(text string) (*Template, error) {
 		t.slots[i] = [2]int{match[0], match[1]}
 	}
 
-	return t, nil
-}
-
-// MustParseTemplate returns a parsed template or panic.
-func MustParseTemplate(text string) *Template {
-	t, err := ParseTemplate(text)
-	if err != nil {
-		panic(err)
-	}
 	return t
 }
 

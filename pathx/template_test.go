@@ -70,10 +70,7 @@ func TestTemplate_Execute(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
-			pathTemplate, err := ParseTemplate(tc.Path)
-			if err != nil {
-				t.Fatalf("expect no error, got %v", err)
-			}
+			pathTemplate := ParseTemplate(tc.Path)
 			path, rawPath := pathTemplate.Execute(tc.Data)
 
 			unescapePath, err := url.PathUnescape(rawPath)
@@ -101,7 +98,7 @@ func ExampleTemplate_Resolve() {
 		return
 	}
 
-	pathTemplate := MustParseTemplate("/:store/products/:product.json")
+	pathTemplate := ParseTemplate("/:store/products/:product.json")
 	resolvedURL := pathTemplate.Resolve(baseURL, map[string]string{
 		"store":   "10001",
 		"product": "2020",
